@@ -395,10 +395,17 @@ namespace roundhouse.databases
                 IDbConnection conn = (IDbConnection)connection.underlying_type();
                 if (conn != null)
                 {
-                    if (conn.State != ConnectionState.Closed)
-                    {
-                        conn.Close();
-                    }
+	                try
+	                {
+						if (conn.State != ConnectionState.Closed)
+						{
+							conn.Close();
+						}
+	                }
+					catch (ObjectDisposedException ex)
+	                {
+						Log.bound_to(this).log_a_debug_event_containing("DB connection is already disposed. '{0}'", ex);
+	                }
                 }
 
                 connection.Dispose();

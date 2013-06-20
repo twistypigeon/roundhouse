@@ -95,27 +95,26 @@ namespace roundhouse.databases.postgresql
         {
             return string.Format("CREATE DATABASE {0};", database_name);
 
-            //            return string.Format(
-            //                @"
-            //--CREATE FUNCTION RH_CreateDb() RETURNS void AS $$
-            //--DECLARE 
-            //--    t_exists integer;
-            //--    --t_created boolean;
-            //--BEGIN
-            //--    --set t_created = false;
-            //--    select INTO t_exists count(*) from pg_catalog.pg_database where datname = '{0}';
-            //--	IF t_exists = 0 THEN
-            //		CREATE DATABASE {0};
-            //--        --t_created = true;
-            //--	END IF;	
-            //
-            //--    --return t_created;
-            //--END;
-            //--$$ LANGUAGE 'plpgsql';
-            //--SELECT RH_CreateDb();
-            //--DROP FUNCTION RH_CreateDb();
-            //",
-            //                database_name);
+			// PostgreSQL 9.2 does not support creating a database from within a function
+//			return string.Format(
+//				@"
+//            CREATE FUNCTION RH_CreateDb() RETURNS boolean AS $$
+//            DECLARE
+//				t_exists integer;
+//				t_created boolean;
+//            BEGIN
+//                t_created = false;
+//                select INTO t_exists count(*) from pg_catalog.pg_database where datname = '{0}';
+//            	IF t_exists = 0 THEN
+//					CREATE DATABASE {0};
+//                    t_created = true;
+//            	END IF;
+//                return t_created;
+//            END;
+//            $$ LANGUAGE 'plpgsql';
+//            SELECT RH_CreateDb();
+//            DROP FUNCTION RH_CreateDb();
+//            ", database_name);
         }
 
         public override string set_recovery_mode_script(bool simple)
